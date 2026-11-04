@@ -1,0 +1,276 @@
+/* ----- ★追加: テーマ用の色（RGBの数字3つ）-----
+   Tailwindの色（slate-800 など）を、この変数から読み込むように index.html で設定している。
+   （今はダークテーマだけを使っている）*/
+:root {
+    color-scheme: dark;
+    --slate-50: 248 250 252;  --slate-100: 241 245 249; --slate-200: 226 232 240;
+    --slate-300: 203 213 225; --slate-400: 148 163 184;
+    --slate-500: 125 140 162; /* ★変更: 暗い背景でも読めるよう、元(100 116 139)より少し明るくした */
+    --slate-600: 71 85 105;   --slate-700: 51 65 85;    --slate-800: 30 41 59;
+    --slate-900: 15 23 42;    --slate-950: 2 6 23;
+
+    --cyan-200: 165 243 252;  --cyan-300: 103 232 249;  --cyan-400: 34 211 238;
+    --amber-200: 253 230 138; --amber-300: 252 211 77;  --amber-400: 251 191 36;
+    --rose-300: 253 164 175;  --rose-400: 251 113 133;
+    --emerald-300: 110 231 183; --emerald-400: 52 211 153;
+    --fuchsia-200: 245 208 254; --fuchsia-300: 240 171 252; --fuchsia-400: 232 121 249;
+    --indigo-300: 165 180 252;
+    --sky-400: 56 189 248;
+
+    --text-main: #f8fafc;
+    --body-bg: #090d16;
+    --body-glow-1: rgba(30, 27, 75, 0.7);
+    --body-glow-2: rgba(15, 23, 42, 0.8);
+    --body-glow-3: rgba(13, 148, 136, 0.08);
+    --panel-bg: rgba(15, 23, 42, 0.65);
+    --panel-border: rgba(255, 255, 255, 0.12);
+    --panel-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --numcard-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    --focus-ring: #38bdf8;
+}
+
+
+
+/* ----- ★追加: 画面サイズに合わせて全体の大きさを自動調整する ----- */
+/* Tailwindの多くのサイズ指定（文字サイズや余白など）は「rem」という単位を使っていて、
+   これは<html>の文字サイズ（基準サイズ）を何倍するかで決まる。
+   なので、ここで<html>の文字サイズを画面の横幅(vw)に応じて変化させるだけで、
+   ページ全体のパーツの大きさがまとめて自動調整される（＝レスポンシブ対応）。
+   clamp(最小値, 基準値, 最大値) は「基準値を使うが、最小〜最大の範囲からはみ出さない」という意味 */
+html {
+    font-size: clamp(14px, 1.1vw + 10px, 19px);
+}
+
+/* ----- 全体背景と基本フォント設定 ----- */
+body {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background: var(--body-bg);
+    background-image: 
+        radial-gradient(at 0% 0%, var(--body-glow-1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, var(--body-glow-2) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, var(--body-glow-3) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    min-height: 100dvh; /* ★追加: スマホでアドレスバー分の表示崩れを防ぐ新しい単位（対応ブラウザのみ） */
+    color: var(--text-main);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.font-outfit {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* ----- すりガラス風パネルのデザイン ----- */
+.glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--panel-border);
+    box-shadow: var(--panel-shadow);
+}
+
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+}
+
+/* ----- 数字カードのボタンデザイン ----- */
+.num-card {
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: var(--numcard-shadow);
+}
+
+/* ホバー時の効果 */
+.num-card:hover:not(:disabled) {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(56, 189, 248, 0.6);
+    box-shadow: 0 12px 20px -2px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+/* 押し込んだときのアニメーション */
+.num-card:active:not(:disabled) {
+    transform: translateY(1px) scale(0.97);
+}
+
+/* ----- 選択中のカードの強調リング表示 ----- */
+.num-card.selected {
+    border-color: #38bdf8 !important;
+    background: linear-gradient(135deg, #0284c7 0%, #1e1b4b 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-6px) scale(1.05);
+}
+
+/* ----- 「10」完成時のクリアカード強調アニメーション ----- */
+.num-card.cleared {
+    background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%) !important;
+    color: #ffffff !important;
+    border-color: #6ee7b7 !important;
+    box-shadow: 0 0 35px rgba(52, 211, 153, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    animation: pulse-glow 1.5s infinite alternate;
+}
+
+/* ----- 選択された演算子ボタン（＋－×÷）のハイライト ----- */
+.op-btn.selected {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    color: #ffffff !important;
+    border-color: #a5b4fc !important;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6) !important;
+    transform: scale(1.06);
+}
+
+/* 点滅アニメーションの定義 */
+@keyframes pulse-glow {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+}
+
+/* ----- 紙吹雪を描画する全画面キャンバス ----- */
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* ----- ★追加: タイムアタックのカウントダウン数字が「ポンッ」と出るアニメーション ----- */
+/* 数字が変わるたびに、少し大きくなってから元のサイズに戻ることで「動いている感」を出す */
+.countdown-pop {
+    animation: countdown-pop-anim 1s ease-out;
+}
+
+@keyframes countdown-pop-anim {
+    0%   { transform: scale(1.6); opacity: 0; }
+    40%  { transform: scale(1);   opacity: 1; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+
+/* =====================================================================
+   ★追加: ここから下は、今回追加した機能のためのCSS
+   ===================================================================== */
+
+/* ----- iPhone(Safari)で入力欄に文字が打てなくなる問題の対策 -----
+   body に user-select: none を付けていると、iOSの入力欄が反応しなくなることがある。
+   入力欄だけは「文字を選択・入力できる」状態に戻しておく。
+   あわせて、文字サイズが16px未満だと入力時に画面が勝手に拡大されるので、16px以上にする */
+input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+    font-size: max(16px, 1rem);
+}
+
+/* ----- 色以外でも「選択中」が分かる目印（色が見分けにくい人のため）----- */
+/* カード: 白い太めの枠線 */
+.num-card.selected {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+    animation: card-select 0.22s ease-out;
+}
+/* 2枚目に選んだカード: 合体する直前に、ほんの一瞬だけ白い枠を出す */
+.num-card.card-flash {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+    transform: translateY(-6px) scale(1.05);
+}
+/* 演算子ボタン: 同じく白い枠線 */
+.op-btn.selected {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* ----- カードのアニメーション ----- */
+/* 選んだ瞬間に「ぷにっ」と弾む */
+@keyframes card-select {
+    0%   { transform: translateY(0) scale(0.94); }
+    60%  { transform: translateY(-9px) scale(1.09); }
+    100% { transform: translateY(-6px) scale(1.05); }
+}
+/* 新しい問題が配られるとき: 下から順番にポンと出てくる（遅れ具合は JS が --i で指定） */
+.card-deal {
+    animation: card-deal-anim 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 35ms);
+}
+@keyframes card-deal-anim {
+    0%   { transform: translateY(18px) scale(0.6); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+/* 計算でできた新しいカード: 大きくなってから元に戻る「ポンッ」 */
+.card-merge-pop {
+    animation: card-merge-pop-anim 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+@keyframes card-merge-pop-anim {
+    0%   { transform: scale(0.6); opacity: 0; }
+    70%  { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+/* 計算できないときに、カードが横にブルブルッと揺れる */
+.card-shake {
+    animation: card-shake-anim 0.4s ease-in-out;
+}
+@keyframes card-shake-anim {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-9px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(4px); }
+}
+
+/* ----- alert() の代わりに出す、画面下のメッセージ（トースト）----- */
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    transform: translate(-50%, 20px);
+    max-width: min(90vw, 26rem);
+    padding: 0.7rem 1.2rem;
+    border-radius: 9999px;
+    background: rgba(15, 23, 42, 0.94);
+    color: #f8fafc;
+    border: 1px solid rgba(251, 113, 133, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 200; /* モーダル(50)や紙吹雪(100)よりも手前に出す */
+}
+#toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* ----- むずかしさ選択ボタンが使えない間（タイムアタック中・対戦中）の見た目 ----- */
+.difficulty-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ----- 動きを減らす設定の人には、今回追加したアニメーションをオフにする ----- */
+@media (prefers-reduced-motion: reduce) {
+    .card-deal, .card-merge-pop, .card-shake,
+    .num-card.selected { animation: none; }
+    #toast { transition: none; }
+}
+
+/* 計算の結果「10」になったカード: まず「ポンッ」と出てから、緑に光り続ける */
+.num-card.cleared.card-merge-pop {
+    animation:
+        card-merge-pop-anim 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) backwards,
+        pulse-glow 1.5s ease-in-out 0.2s infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+    .num-card.cleared.card-merge-pop { animation: none; }
+}
+
+/* トーストの種類: 情報（むずかしさを変えた時など）は青い枠線にする */
+#toast.info { border-color: rgba(56, 189, 248, 0.7); }
